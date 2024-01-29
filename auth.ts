@@ -1,10 +1,9 @@
-import NextAuth, { Session } from 'next-auth';
+import NextAuth from 'next-auth';
 
 import authConfig from '@/auth.config';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { db } from './lib/db';
-import { JWT } from 'next-auth/jwt';
 import { getUserById } from './database/user';
 
 export const {
@@ -17,7 +16,7 @@ export const {
         strategy: 'jwt'
     },
     callbacks: {
-        async session({ token, session }: any) {
+        async session({ token, session }) {
             console.log('session', session);
 
             console.log('token', token);
@@ -28,6 +27,10 @@ export const {
 
             if (session.user) {
                 session.user.id = token.sub;
+            }
+
+            if (session.user && token.user) {
+                session.user.role = token.role;
             }
 
             return Promise.resolve(session);
