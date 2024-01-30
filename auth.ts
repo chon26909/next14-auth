@@ -16,7 +16,7 @@ export const {
         strategy: 'jwt'
     },
     callbacks: {
-        async session({ token, session }) {
+        async session({ token, session }: any) {
             console.log('session', session);
 
             console.log('token', token);
