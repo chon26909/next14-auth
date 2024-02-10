@@ -12,10 +12,23 @@ export const {
     signIn,
     signOut
 } = NextAuth({
+    adapter: PrismaAdapter(db),
+    ...authConfig,
     session: {
         strategy: 'jwt'
     },
     callbacks: {
+        // async signIn({ user }) {
+        //     if (user) {
+        //         const existingUser = await getUserById(user.id as string);
+
+        //         if (!existingUser || !existingUser.emailVerified) {
+        //             return false;
+        //         }
+        //     }
+
+        //     return true;
+        // },
         async session({ token, session }: any) {
             console.log('session', session);
 
@@ -35,7 +48,7 @@ export const {
 
             return Promise.resolve(session);
         },
-        async jwt({ token }) {
+        async jwt({ token }: any) {
             console.log(token);
 
             if (!token.sub) {
@@ -52,9 +65,7 @@ export const {
 
             return token;
         }
-    },
-    adapter: PrismaAdapter(db),
-    ...authConfig
+    }
 
     // providers: [
     //     github({
