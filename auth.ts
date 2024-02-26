@@ -1,10 +1,12 @@
 import NextAuth from 'next-auth';
 
 import authConfig from '@/auth.config';
-
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from './lib/db';
 import { getUserById } from './database/user';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const {
     handlers: { GET, POST },
@@ -12,8 +14,7 @@ export const {
     signIn,
     signOut
 } = NextAuth({
-    adapter: PrismaAdapter(db),
-    ...authConfig,
+    adapter: PrismaAdapter(prisma),
     session: {
         strategy: 'jwt'
     },
@@ -65,8 +66,8 @@ export const {
 
             return token;
         }
-    }
-
+    },
+    ...authConfig
     // providers: [
     //     github({
     //         clientId: process.env.GITHUB_CLIENT_ID,
